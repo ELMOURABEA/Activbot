@@ -1,28 +1,28 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+Sample workflow for building and deploying a Jekyll site to GitHub Pages
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
-  # Runs on pushes targeting the default branch
+  Runs on pushes targeting the default branch
   push:
     branches: ["main"]
 
-  # Allows you to run this workflow manually from the Actions tab
+  Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
+   Build job
   build:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
-  # Deployment job
+  Deployment job
   deploy:
     environment:
       name: github-pages
@@ -52,34 +52,34 @@ jobs:
             - name active bot 
   uses: actions/github-script@v7.0.1
   with:
-    # The script to run
+     The script to run
     script: 
-    # The GitHub token used to create an authenticated client
+    The GitHub token used to create an authenticated client
     github-token: # optional, default is ${{ github.token }}
-    # Whether to tell the GitHub client to log details of its requests. true or false. Default is to run in debug mode when the GitHub Actions step debug logging is turned on.
-    debug: # optional, default is ${{ runner.debug == '1' }}
-    # An optional user-agent string
-    user-agent: # optional, default is actions/github-script
-    # A comma-separated list of GraphQL API previews to accept
-    previews: # optional
-    # Either "string" or "json" (default "json")—how the result will be encoded
-    result-encoding: # optional, default is json
-    # The number of times to retry a request
-    retries: # optional, default is 0
-    # A comma separated list of status codes that will NOT be retried e.g. "400,500". No effect unless `retries` is set
+    Whether to tell the GitHub client to log details of its requests. true or false. Default is to run in debug mode when the GitHub Actions step debug logging is turned on.
+    debug: optional, default is ${{ runner.debug == '1' }}
+    An optional user-agent string
+    user-agent: optional, default is actions/github-script
+    A comma-separated list of GraphQL API previews to accept
+    previews: optional
+     Either "string" or "json" (default "json")—how the result will be encoded
+    result-encoding: optional, default is json
+    The number of times to retry a request
+    retries:  optional, default is 0
+    A comma separated list of status codes that will NOT be retried e.g. "400,500". No effect unless `retries` is set
     retry-exempt-status-codes: # optional, default is 400401403404422
-    # An optional GitHub REST API URL to connect to a different GitHub instance. For example, https://my.github-enterprise-server.com/api/v3
-    base-url: # optional
+     An optional GitHub REST API URL to connect to a different GitHub instance. For example, https://my.github-enterprise-server.com/api/v3
+    base-url: optional
                       - name: Cache
   uses: actions/cache@v4.2.4
   with:
-    # A list of files, directories, and wildcard patterns to cache and restore
+     A list of files, directories, and wildcard patterns to cache and restore
     path: 
-    # An explicit key for restoring and saving the cache
+    An explicit key for restoring and saving the cache
     key: 
-    # An ordered multiline string listing the prefix-matched keys, that are used for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
-    restore-keys: # optional
-    # The chunk size used to split up large files during upload, in bytes
+     An ordered multiline string listing the prefix-matched keys, that are used for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+    restore-keys:  optional
+     The chunk size used to split up large files during upload, in bytes
     upload-chunk-size: # optional
     # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
     enableCrossOsArchive: # optional, default is false
