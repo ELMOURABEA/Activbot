@@ -1,0 +1,70 @@
+name: demo_pipeline
+version: 1.0.1
+created_at: '2025-10-07T01:58:17.218401+00:00'
+metadata:
+  auto_generated: true
+  requirements:
+    name: demo_pipeline
+    goals:
+    - type: setup
+      description: Setup environment
+    - type: build
+      description: Build application
+      depends_on:
+      - task_1_setup
+    - type: test
+      description: Run comprehensive tests
+      depends_on:
+      - task_2_build
+    - type: package
+      description: Package artifacts
+      depends_on:
+      - task_3_test
+    - type: deploy
+      description: Deploy to staging
+      depends_on:
+      - task_4_package
+  constraints: {}
+tasks:
+- name: task_1_setup
+  type: setup
+  description: Setup environment
+  parameters: {}
+  depends_on: []
+- name: task_2_build
+  type: build
+  description: Build application
+  parameters: {}
+  depends_on:
+  - task_1_setup
+- name: task_3_test
+  type: test
+  description: Run comprehensive tests
+  parameters: {}
+  depends_on:
+  - task_2_build
+  retry:
+    max_attempts: 3
+    delay: 5
+- name: task_4_package
+  type: package
+  description: Package artifacts
+  parameters: {}
+  depends_on:
+  - task_3_test
+- name: task_5_deploy
+  type: deploy
+  description: Deploy to staging
+  parameters:
+    environment: staging
+  depends_on:
+  - task_4_package
+  retry:
+    max_attempts: 2
+    delay: 10
+description: Enhanced demo pipeline with retry logic
+updated_at: '2025-10-07T01:58:17.224834+00:00'
+update_history:
+- version: 1.0.1
+  timestamp: '2025-10-07T01:58:17.224834+00:00'
+  reason: Added retry logic for critical tasks
