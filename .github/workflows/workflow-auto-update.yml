@@ -1,0 +1,103 @@
+name: Workflow Auto-Update System
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'activbot/workflows/**'
+      - 'activbot/plugins/**'
+      - 'activbot/*.py'
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      workflow_name:
+        description: 'Workflow to validate'
+        required: false
+        type: string
+
+jobs:
+  validate-workflows:
+    name: Validate Workflow Definitions
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Validate workflow schemas
+      run: |
+        python -m activbot.validator --validate-all
+        
+    - name: Check workflow compatibility
+      run: |
+        echo "Checking workflow compatibility with current plugins..."
+        python -m activbot.validator --check-compatibility
+        
+  test-workflow-engine:
+    name: Test Workflow Engine
+    runs-on: ubuntu-latest
+    needs: validate-workflows
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+        
+    - name: Run workflow engine tests
+      run: |
+        pytest tests/ -v --cov=activbot --cov-report=term-missing
+        
+  auto-update-check:
+    name: Check for Auto-Updates
+    runs-on: ubuntu-latest
+    needs: test-workflow-engine
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Check for plugin updates
+      run: |
+        echo "Checking for available plugin updates..."
+        python -m activbot.updater --check-plugins
+        
+    - name: Check for workflow improvements
+      run: |
+        echo "Analyzing workflows for potential improvements..."
+        python -m activbot.updater --analyze-workflows
+        
+    - name: Generate update report
+      run: |
+        echo "Generating auto-update report..."
+        python -m activbot.updater --report

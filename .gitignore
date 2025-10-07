@@ -13,6 +13,9 @@ ENV/
 *.egg-info/
 dist/
 build/
+.coverage
+.pytest_cache/
+*.log
 
 # IDEs
 .vscode/
