@@ -1,0 +1,29 @@
+name: simple_workflow
+version: 1.0.0
+description: Simple workflow demonstrating the auto-design system
+created_at: '2025-01-01T00:00:00'
+metadata:
+  auto_generated: false
+  tags:
+    - example
+    - demo
+tasks:
+  - name: initialize
+    type: example
+    description: Initialize the workflow
+    parameters:
+      message: "Starting workflow"
+  - name: process
+    type: example
+    description: Process data
+    parameters:
+      operation: "transform"
+    depends_on:
+      - initialize
+  - name: finalize
+    type: example
+    description: Complete the workflow
+    parameters:
+      message: "Workflow completed"
+    depends_on:
+      - process
