@@ -2,6 +2,7 @@ name: Workflow Auto-Update System
 
 on:
   push:
+    branches: [ "main" ]
     paths:
       - 'activbot/workflows/**'
       - 'activbot/plugins/**'
