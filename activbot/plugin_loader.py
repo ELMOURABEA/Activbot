@@ -51,11 +51,11 @@ class PluginLoader:
         
         # Find the plugin class (looks for classes with 'Plugin' in name or 'execute' method)
         plugin_class = None
+        from .plugins.base_plugin import BasePlugin
         for name, obj in inspect.getmembers(module, inspect.isclass):
-            if 'Plugin' in name or hasattr(obj, 'execute'):
+            if issubclass(obj, BasePlugin) and obj is not BasePlugin:
                 plugin_class = obj
                 break
-                
         if plugin_class is None:
             raise ValueError(f"No valid plugin class found in {plugin_path}")
             
