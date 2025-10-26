@@ -106,3 +106,133 @@ class TestWorkflowEngine:
         assert len(workflows) == 2
         assert 'workflow1' in workflows
         assert 'workflow2' in workflows
+        
+    def test_execute_workflow_with_dependencies(self):
+        """Test executing a workflow respects task dependencies"""
+        engine = WorkflowEngine()
+        
+        # Create a workflow where tasks are listed out of dependency order
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
+            workflow_data = {
+                'name': 'test_deps',
+                'tasks': [
+                    {'name': 'task_c', 'type': 'test', 'depends_on': ['task_a', 'task_b']},
+                    {'name': 'task_a', 'type': 'test'},
+                    {'name': 'task_b', 'type': 'test', 'depends_on': ['task_a']}
+                ]
+            }
+            yaml.dump(workflow_data, f)
+            temp_path = f.name
+            
+        try:
+            engine.load_workflow(temp_path)
+            results = engine.execute_workflow('test_deps')
+            
+            # Verify tasks executed in correct dependency order
+            task_names = [task['name'] for task in results['tasks']]
+            assert task_names == ['task_a', 'task_b', 'task_c']
+            
+            # task_a should run first (no dependencies)
+            # task_b should run second (depends on task_a)
+            # task_c should run last (depends on both)
+        finally:
+            Path(temp_path).unlink()
+            
+    def test_execute_workflow_circular_dependency(self):
+        """Test that circular dependencies are detected"""
+        engine = WorkflowEngine()
+        
+        # Create a workflow with circular dependencies
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
+            workflow_data = {
+                'name': 'test_circular',
+                'tasks': [
+                    {'name': 'task_a', 'type': 'test', 'depends_on': ['task_b']},
+                    {'name': 'task_b', 'type': 'test', 'depends_on': ['task_a']}
+                ]
+            }
+            yaml.dump(workflow_data, f)
+            temp_path = f.name
+            
+        try:
+            engine.load_workflow(temp_path)
+            
+            with pytest.raises(ValueError) as exc_info:
+                engine.execute_workflow('test_circular')
+            
+            assert 'Circular dependency' in str(exc_info.value)
+        finally:
+            Path(temp_path).unlink()
+            
+    def test_execute_workflow_missing_dependency(self):
+        """Test that missing dependencies are detected"""
+        engine = WorkflowEngine()
+        
+        # Create a workflow with missing dependency
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
+            workflow_data = {
+                'name': 'test_missing',
+                'tasks': [
+                    {'name': 'task_a', 'type': 'test'},
+                    {'name': 'task_b', 'type': 'test', 'depends_on': ['task_nonexistent']}
+                ]
+            }
+            yaml.dump(workflow_data, f)
+            temp_path = f.name
+            
+        try:
+            engine.load_workflow(temp_path)
+            
+            with pytest.raises(ValueError) as exc_info:
+                engine.execute_workflow('test_missing')
+            
+            assert 'non-existent task' in str(exc_info.value)
+        finally:
+            Path(temp_path).unlink()
+            
+    def test_execute_workflow_complex_dependencies(self):
+        """Test complex dependency graph is resolved correctly"""
+        engine = WorkflowEngine()
+        
+        # Create a workflow with complex dependencies
+        # Dependency graph:
+        #   task_a (no deps)
+        #   task_b (no deps)
+        #   task_c -> task_a
+        #   task_d -> task_a, task_b
+        #   task_e -> task_c, task_d
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
+            workflow_data = {
+                'name': 'test_complex',
+                'tasks': [
+                    {'name': 'task_e', 'type': 'test', 'depends_on': ['task_c', 'task_d']},
+                    {'name': 'task_c', 'type': 'test', 'depends_on': ['task_a']},
+                    {'name': 'task_a', 'type': 'test'},
+                    {'name': 'task_d', 'type': 'test', 'depends_on': ['task_a', 'task_b']},
+                    {'name': 'task_b', 'type': 'test'}
+                ]
+            }
+            yaml.dump(workflow_data, f)
+            temp_path = f.name
+            
+        try:
+            engine.load_workflow(temp_path)
+            results = engine.execute_workflow('test_complex')
+            
+            task_names = [task['name'] for task in results['tasks']]
+            
+            # task_a and task_b must come first (no dependencies)
+            assert task_names.index('task_a') < task_names.index('task_c')
+            assert task_names.index('task_a') < task_names.index('task_d')
+            assert task_names.index('task_b') < task_names.index('task_d')
+            
+            # task_c must come before task_e
+            assert task_names.index('task_c') < task_names.index('task_e')
+            
+            # task_d must come before task_e
+            assert task_names.index('task_d') < task_names.index('task_e')
+            
+            # task_e must be last
+            assert task_names[-1] == 'task_e'
+        finally:
+            Path(temp_path).unlink()
