@@ -66,8 +66,12 @@ class WorkflowEngine:
             'tasks': []
         }
         
-        # Execute tasks in the workflow
-        for task in workflow.get('tasks', []):
+        # Sort tasks by dependencies before executing
+        tasks = workflow.get('tasks', [])
+        sorted_tasks = self._topological_sort(tasks)
+        
+        # Execute tasks in dependency order
+        for task in sorted_tasks:
             task_result = self._execute_task(task, context)
             results['tasks'].append(task_result)
             
@@ -117,3 +121,67 @@ class WorkflowEngine:
             List[str]: Names of loaded workflows
         """
         return list(self.workflows.keys())
+    
+    def _topological_sort(self, tasks: List[Dict]) -> List[Dict]:
+        """
+        Sort tasks based on their dependencies using topological sort.
+        
+        Args:
+            tasks: List of task definitions
+            
+        Returns:
+            List[Dict]: Tasks sorted in dependency order
+            
+        Raises:
+            ValueError: If there are circular dependencies or missing dependencies
+        """
+        # Build task name to task dict mapping
+        task_map = {task['name']: task for task in tasks}
+        
+        # Validate all dependencies exist
+        for task in tasks:
+            depends_on = task.get('depends_on', [])
+            for dep in depends_on:
+                if dep not in task_map:
+                    raise ValueError(
+                        f"Task '{task['name']}' depends on non-existent task '{dep}'"
+                    )
+        
+        # Build in-degree map (count of dependencies for each task)
+        in_degree = {task['name']: 0 for task in tasks}
+        
+        # Build adjacency list (task -> list of tasks that depend on it)
+        adjacency = {task['name']: [] for task in tasks}
+        
+        for task in tasks:
+            depends_on = task.get('depends_on', [])
+            in_degree[task['name']] = len(depends_on)
+            
+            for dep in depends_on:
+                adjacency[dep].append(task['name'])
+        
+        # Kahn's algorithm for topological sort
+        queue = [name for name in in_degree if in_degree[name] == 0]
+        sorted_names = []
+        
+        while queue:
+            # Sort queue to ensure consistent ordering when multiple tasks have no dependencies
+            queue.sort()
+            current = queue.pop(0)
+            sorted_names.append(current)
+            
+            # Reduce in-degree for dependent tasks
+            for dependent in adjacency[current]:
+                in_degree[dependent] -= 1
+                if in_degree[dependent] == 0:
+                    queue.append(dependent)
+        
+        # Check for circular dependencies
+        if len(sorted_names) != len(tasks):
+            remaining = [name for name in in_degree if name not in sorted_names]
+            raise ValueError(
+                f"Circular dependency detected involving tasks: {', '.join(remaining)}"
+            )
+        
+        # Return tasks in sorted order
+        return [task_map[name] for name in sorted_names]
