@@ -10,11 +10,7 @@ import yaml
 try:
     from jsonschema import validate, ValidationError
 except ImportError:
-    ValidationError = Exception
-    
-    def validate(instance, schema):
-        """Fallback validation function"""
-        pass
+    raise ImportError("jsonschema is required for validation. Please install it via 'pip install jsonschema'.")
 
 
 class WorkflowValidator:
