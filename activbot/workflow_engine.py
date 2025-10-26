@@ -166,8 +166,8 @@ class WorkflowEngine:
         
         while queue:
             # Sort queue to ensure consistent ordering when multiple tasks have no dependencies
-            queue.sort()
-            current = queue.pop(0)
+            queue.sort(reverse=True)
+            current = queue.pop()
             sorted_names.append(current)
             
             # Reduce in-degree for dependent tasks
