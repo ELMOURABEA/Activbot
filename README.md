@@ -171,7 +171,7 @@ Contributions are welcome! Please:
 
 ## License
 
-MIT License - Copyright (c) 2025 ELMOURABEA
+MIT License - Copyright (c) 2024 ELMOURABEA
 
 See [LICENSE](LICENSE) for details.
 
