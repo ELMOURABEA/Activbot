@@ -163,11 +163,12 @@ class WorkflowEngine:
         
         # Kahn's algorithm for topological sort
         # Sort initial queue once for consistent ordering
+        # Using reverse=True with pop() gives us alphabetical order (pop from end)
         queue = sorted([name for name in in_degree if in_degree[name] == 0], reverse=True)
         sorted_names = []
         
         while queue:
-            current = queue.pop()
+            current = queue.pop()  # Pop from end (smallest name due to reverse sort)
             sorted_names.append(current)
             
             # Reduce in-degree for dependent tasks

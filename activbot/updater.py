@@ -36,8 +36,7 @@ class WorkflowUpdater:
                        if not f.name.startswith("__")] if self.plugin_dir.exists() else []
         
         self._plugin_files_cache = plugin_files
-        if self._cache_timestamp is None:
-            self._cache_timestamp = current_time
+        self._cache_timestamp = current_time
         
         return plugin_files
     
@@ -54,8 +53,7 @@ class WorkflowUpdater:
         workflow_files = list(self.workflow_dir.glob("*.yml")) if self.workflow_dir.exists() else []
         
         self._workflow_files_cache = workflow_files
-        if self._cache_timestamp is None:
-            self._cache_timestamp = current_time
+        self._cache_timestamp = current_time
         
         return workflow_files
         

@@ -139,7 +139,7 @@ class TestPerformance:
         # Create plugin files
         for i in range(3):
             plugin_code = f'''
-class TestPlugin{i}:
+class TestPlugin_{i}:
     def execute(self, task, context):
         return {{"status": "completed"}}
 '''
