@@ -18,23 +18,60 @@ class WorkflowUpdater:
                  plugin_dir: str = "activbot/plugins"):
         self.workflow_dir = Path(workflow_dir)
         self.plugin_dir = Path(plugin_dir)
+        self._plugin_files_cache = None
+        self._workflow_files_cache = None
+        self._cache_timestamp = None
+    
+    def _get_plugin_files(self, use_cache: bool = True):
+        """Get list of plugin files with optional caching."""
+        import time
         
-    def check_plugin_updates(self) -> Dict[str, Any]:
+        current_time = time.time()
+        if (use_cache and self._plugin_files_cache is not None and 
+            self._cache_timestamp is not None and 
+            current_time - self._cache_timestamp < 5):
+            return self._plugin_files_cache
+        
+        plugin_files = [f for f in self.plugin_dir.glob("*.py") 
+                       if not f.name.startswith("__")] if self.plugin_dir.exists() else []
+        
+        self._plugin_files_cache = plugin_files
+        if self._cache_timestamp is None:
+            self._cache_timestamp = current_time
+        
+        return plugin_files
+    
+    def _get_workflow_files(self, use_cache: bool = True):
+        """Get list of workflow files with optional caching."""
+        import time
+        
+        current_time = time.time()
+        if (use_cache and self._workflow_files_cache is not None and 
+            self._cache_timestamp is not None and 
+            current_time - self._cache_timestamp < 5):
+            return self._workflow_files_cache
+        
+        workflow_files = list(self.workflow_dir.glob("*.yml")) if self.workflow_dir.exists() else []
+        
+        self._workflow_files_cache = workflow_files
+        if self._cache_timestamp is None:
+            self._cache_timestamp = current_time
+        
+        return workflow_files
+        
+    def check_plugin_updates(self, use_cache: bool = True) -> Dict[str, Any]:
         """
         Check for available plugin updates.
+        
+        Args:
+            use_cache: If True, use cached plugin file list
         
         Returns:
             Dictionary of plugin update information
         """
         updates = {}
         
-        if not self.plugin_dir.exists():
-            return updates
-            
-        for plugin_file in self.plugin_dir.glob("*.py"):
-            if plugin_file.name.startswith("__"):
-                continue
-                
+        for plugin_file in self._get_plugin_files(use_cache):
             plugin_name = plugin_file.stem
             
             # Check plugin modification time
@@ -48,19 +85,19 @@ class WorkflowUpdater:
             
         return updates
         
-    def analyze_workflows(self) -> Dict[str, List[str]]:
+    def analyze_workflows(self, use_cache: bool = True) -> Dict[str, List[str]]:
         """
         Analyze workflows for potential improvements.
+        
+        Args:
+            use_cache: If True, use cached workflow file list
         
         Returns:
             Dictionary of workflow names to improvement suggestions
         """
         suggestions = {}
-        
-        if not self.workflow_dir.exists():
-            return suggestions
             
-        for workflow_file in self.workflow_dir.glob("*.yml"):
+        for workflow_file in self._get_workflow_files(use_cache):
             with open(workflow_file, 'r') as f:
                 workflow = yaml.safe_load(f)
                 
