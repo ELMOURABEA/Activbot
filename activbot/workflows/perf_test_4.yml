@@ -1,7 +1,0 @@
-name: perf_test_4
-version: 1.0.0
-created_at: '2025-10-31T21:51:52.272881+00:00'
-metadata: {}
-tasks:
-- name: task_4
-  type: test
