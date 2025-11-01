@@ -2,6 +2,10 @@
 pyyaml>=6.0
 jsonschema>=4.17.0
 
+# QR code generation for UAE Commemorative Coin Project
+qrcode>=7.4.2
+pillow>=10.3.0
+
 # Testing dependencies (dev)
 pytest>=7.4.0
 pytest-cov>=4.1.0
