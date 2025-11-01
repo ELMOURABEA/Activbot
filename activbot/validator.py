@@ -28,6 +28,10 @@ class WorkflowValidator:
         self.workflow_dir = Path(workflow_dir)
         self.schema_path = Path(schema_path)
         self.schema = None
+        self._plugin_loader = None
+        self._available_plugins = None
+        self._workflow_files_cache = None
+        self._workflow_cache_timestamp = None
         
         if self.schema_path.exists():
             with open(self.schema_path, 'r') as f:
@@ -92,9 +96,40 @@ class WorkflowValidator:
             
         return len(errors) == 0, errors
         
-    def validate_all_workflows(self) -> dict:
+    def _get_workflow_files(self, use_cache: bool = True):
+        """
+        Get list of workflow files with optional caching.
+        
+        Args:
+            use_cache: If True, use cached results if available
+            
+        Returns:
+            List of workflow file paths
+        """
+        import time
+        
+        # Check if cache is valid (exists and less than 5 seconds old)
+        current_time = time.time()
+        if (use_cache and self._workflow_files_cache is not None and 
+            self._workflow_cache_timestamp is not None and 
+            current_time - self._workflow_cache_timestamp < 5):
+            return self._workflow_files_cache
+        
+        # Build new list
+        workflow_files = list(self.workflow_dir.glob("*.yml")) if self.workflow_dir.exists() else []
+        
+        # Update cache
+        self._workflow_files_cache = workflow_files
+        self._workflow_cache_timestamp = current_time
+        
+        return workflow_files
+    
+    def validate_all_workflows(self, use_cache: bool = True) -> dict:
         """
         Validate all workflows in the workflow directory.
+        
+        Args:
+            use_cache: If True, use cached workflow file list
         
         Returns:
             Dictionary mapping workflow names to validation results
@@ -104,7 +139,7 @@ class WorkflowValidator:
         if not self.workflow_dir.exists():
             return results
             
-        for workflow_file in self.workflow_dir.glob("*.yml"):
+        for workflow_file in self._get_workflow_files(use_cache):
             is_valid, errors = self.validate_workflow(str(workflow_file))
             results[workflow_file.name] = {
                 'valid': is_valid,
@@ -113,22 +148,28 @@ class WorkflowValidator:
             
         return results
         
-    def check_compatibility(self) -> dict:
+    def check_compatibility(self, use_cache: bool = True) -> dict:
         """
         Check if workflows are compatible with available plugins.
+        
+        Args:
+            use_cache: If True, use cached workflow file list
         
         Returns:
             Compatibility report
         """
         from .plugin_loader import PluginLoader
         
-        plugin_loader = PluginLoader()
-        available_plugins = plugin_loader.load_all_plugins()
-        plugin_types = set(available_plugins.keys())
+        # Cache plugin loader to avoid reloading plugins on repeated calls
+        if self._plugin_loader is None:
+            self._plugin_loader = PluginLoader()
+            self._available_plugins = self._plugin_loader.load_all_plugins()
+        
+        plugin_types = set(self._available_plugins.keys())
         
         compatibility_report = {}
         
-        for workflow_file in self.workflow_dir.glob("*.yml"):
+        for workflow_file in self._get_workflow_files(use_cache):
             with open(workflow_file, 'r') as f:
                 workflow = yaml.safe_load(f)
                 

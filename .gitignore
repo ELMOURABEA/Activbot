@@ -17,6 +17,10 @@ build/
 .pytest_cache/
 *.log
 
+# Test-generated workflows
+activbot/workflows/perf_test_*.yml
+activbot/workflows/workflow_*.yml
+
 # IDEs
 .vscode/
 .idea/

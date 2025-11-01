@@ -18,6 +18,8 @@ class WorkflowManager:
         self.workflow_dir = Path(workflow_dir)
         self.workflow_dir.mkdir(parents=True, exist_ok=True)
         self.workflow_history: Dict[str, List[Dict]] = {}
+        self._workflow_cache: Optional[List[str]] = None
+        self._cache_timestamp: Optional[float] = None
         
     def create_workflow(self, name: str, tasks: List[Dict], 
                        metadata: Optional[Dict] = None) -> Dict:
@@ -186,15 +188,36 @@ class WorkflowManager:
         workflow_path = self.workflow_dir / f"{workflow['name']}.yml"
         with open(workflow_path, 'w') as f:
             yaml.dump(workflow, f, default_flow_style=False, sort_keys=False)
+        # Invalidate cache when workflow is saved
+        self._workflow_cache = None
+        self._cache_timestamp = None
             
-    def list_workflows(self) -> List[str]:
+    def list_workflows(self, use_cache: bool = True) -> List[str]:
         """
         List all available workflow files.
+        
+        Args:
+            use_cache: If True, use cached results if available (default: True)
         
         Returns:
             List of workflow names
         """
+        import time
+        
+        # Check if cache is valid (exists and less than 5 seconds old)
+        current_time = time.time()
+        if (use_cache and self._workflow_cache is not None and 
+            self._cache_timestamp is not None and 
+            current_time - self._cache_timestamp < 5):
+            return self._workflow_cache.copy()
+        
+        # Build new list
         workflows = []
         for workflow_file in self.workflow_dir.glob("*.yml"):
             workflows.append(workflow_file.stem)
+        
+        # Update cache
+        self._workflow_cache = workflows
+        self._cache_timestamp = current_time
+        
         return workflows
