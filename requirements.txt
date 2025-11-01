@@ -1,0 +1,7 @@
+# Core dependencies for Activbot workflow automation
+pyyaml>=6.0
+jsonschema>=4.17.0
+
+# Testing dependencies (dev)
+pytest>=7.4.0
+pytest-cov>=4.1.0

@@ -1,0 +1,60 @@
+name: example_ci_workflow
+version: 1.0.0
+description: Example CI/CD workflow demonstrating auto-design capabilities
+created_at: '2025-01-01T00:00:00'
+metadata:
+  auto_generated: false
+  tags:
+    - ci
+    - testing
+    - deployment
+tasks:
+  - name: checkout_code
+    type: git
+    description: Checkout source code from repository
+    parameters:
+      branch: main
+      depth: 1
+  - name: install_dependencies
+    type: package_manager
+    description: Install project dependencies
+    parameters:
+      command: pip install -r requirements.txt
+    depends_on:
+      - checkout_code
+  - name: run_linting
+    type: linter
+    description: Run code quality checks
+    parameters:
+      tools:
+        - flake8
+        - pylint
+    depends_on:
+      - install_dependencies
+  - name: run_tests
+    type: test
+    description: Execute test suite
+    parameters:
+      framework: pytest
+      coverage: true
+    depends_on:
+      - install_dependencies
+    retry:
+      max_attempts: 3
+      delay: 5
+  - name: build_artifact
+    type: build
+    description: Build deployment artifact
+    parameters:
+      output: dist/
+    depends_on:
+      - run_linting
+      - run_tests
+  - name: deploy
+    type: deployment
+    description: Deploy to production
+    parameters:
+      environment: production
+      strategy: rolling
+    depends_on:
+      - build_artifact

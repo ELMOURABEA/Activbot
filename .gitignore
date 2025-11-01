@@ -13,14 +13,12 @@ ENV/
 *.egg-info/
 dist/
 build/
+copilot/fix-625a8842-f69f-44f5-ab5e-0419c895b>>>
 
-# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
-.DS_Store
+# OS.DS_Store
 Thumbs.db

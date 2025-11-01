@@ -1,0 +1,77 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install dependencies
+      run: |
+        conda env update --file environment.yml --name base
+    - name: Lint with flake8
+      run: |
+        conda install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        conda install pytest
+        pytest
+# File: activbot/plugins/base_plugin.py (ref 0ba7ea3ce1611c8542aec506f3f31d3a59cf8461)
+from typing import Dict, Any
+# remove @abstractmethod and provide default implementation
+def execute(self, task: Dict, context: Dict) -> Dict:
+    """
+    Default implementation. Subclasses should override this method.
+    If not overridden, calling execute will raise a clear error.
+    """
+    raise NotImplementedError("Plugin classes must implement execute(task: Dict, context: Dict) -> Dict")
+    # Example: modify your plugin loader code to use this pattern
+import inspect
+import logging
+from activbot.plugins.base_plugin import BasePlugin
+
+logger = logging.getLogger(__name__)
+
+def register_plugins_from_module(module):
+    for name, cls in inspect.getmembers(module, inspect.isclass):
+        # only subclasses of BasePlugin
+        if not issubclass(cls, BasePlugin):
+            continue
+        # skip the base class itself
+        if cls is BasePlugin:
+            continue
+        # skip abstract subclasses (missing required methods)
+        if inspect.isabstract(cls):
+            logger.warning("Skipping abstract plugin class %s in module %s (missing required methods)", name, module.__name__)
+            continue
+        # safe to instantiate
+        try:
+            instance = cls()
+        except Exception as e:
+            logger.exception("Failed to instantiate plugin %s: %s", name, e)
+            continue
+        register_plugin(instance)  # replace with your existing registration logic
+        # File: activbot/plugins/example_plugin.py
+from typing import Dict
+from activbot.plugins.base_plugin import BasePlugin
+
+class ExamplePlugin(BasePlugin):
+    def execute(self, task: Dict, context: Dict) -> Dict:
+        # Implement logic here
+        return {"status": "success", "output": "example executed"}

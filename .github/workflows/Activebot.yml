@@ -1,5 +1,4 @@
-name: Build and Test (English & Arabic)
-
+name: Build and Test (English & Arabic) I 
 on:
   push:
     branches: [ "main" ]
