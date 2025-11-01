@@ -1,9 +1,6 @@
 # Activbot
 
-**Activbot** is a self-evolving workflow automation framework that enables dynamic workflow generation, modification, and updates without manual intervention.
-
-[![CI](https://github.com/ELMOURABEA/Activbot/workflows/CI/badge.svg)](https://github.com/ELMOURABEA/Activbot/actions)
-[![Workflow Auto-Update System](https://github.com/ELMOURABEA/Activbot/workflows/Workflow%20Auto-Update%20System/badge.svg)](https://github.com/ELMOURABEA/Activbot/actions)
+**Activbot** is a self-evolving workflow automation framework that enables dynamic workflow generation, modification, and updates without manual interventi
 
 ## Features
 
@@ -47,26 +44,7 @@ results = engine.execute_workflow('my_workflow')
 print(results)
 ```
 
-### Auto-Generate Workflows
-
-```python
-from activbot import WorkflowManager
-
-manager = WorkflowManager()
-
-# Define requirements
-requirements = {
-    'name': 'ci_pipeline',
-    'goals': [
-        {'type': 'git', 'description': 'Checkout code'},
-        {'type': 'build', 'description': 'Build application'},
-        {'type': 'test', 'description': 'Run tests', 'depends_on': ['task_2_build']}
-    ]
-}
-
-# Generate workflow automatically
-workflow = manager.generate_workflow_from_requirements(requirements)
-```
+##
 
 ## Architecture
 
@@ -78,7 +56,7 @@ Activbot consists of several key components:
 - **Validator** - Schema validation and compatibility checking
 - **Auto-Updater** - Analyzes and suggests workflow improvements
 
-See [WORKFLOW_ARCHITECTURE.md](WORKFLOW_ARCHITECTURE.md) for detailed documentation.
+See [WORKFLOW_ARCHITECTURE.md] for detailed documentation.
 
 ## Running Tests
 
@@ -104,14 +82,7 @@ from activbot.plugins.base_plugin import BasePlugin
 class MyCustomPlugin(BasePlugin):
     def __init__(self):
         super().__init__()
-        self.version = "1.0.0"
-        
-    def execute(self, task, context):
-        # Your custom logic here
-        return {
-            'name': task['name'],
-            'status': 'completed',
-            'output': 'Custom task executed'
+        self.version = "1.0
         }
 ```
 
@@ -166,14 +137,14 @@ Contributions are welcome! Please:
 1. Fork the repository
 2. Create a feature branch
 3. Add tests for new functionality
-4. Run `pytest` and `python -m activbot.validator --validate-all`
+4. Run `pytest` and `python
 5. Submit a pull request
 
 ## License
 
 MIT License - Copyright (c) 2025 ELMOURABEA
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE] for details.
 
 ---
 
