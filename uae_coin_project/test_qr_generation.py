@@ -251,10 +251,10 @@ def test_qr_destinations():
             else:
                 print(f"   ✓ {key}: {qr_info[key]}")
         
-        # Validate URL format
+        # Validate URL format - require HTTPS for security
         url = qr_info.get('url', '')
-        if not url.startswith('http://') and not url.startswith('https://'):
-            print(f"   ⚠️  URL should use http:// or https:// protocol")
+        if not url.startswith('https://'):
+            print(f"   ⚠️  URL should use https:// protocol for security")
             all_valid = False
     
     print("\n" + "=" * 70)
@@ -278,8 +278,8 @@ if __name__ == '__main__':
     # Test QR generation
     gen_result = test_qr_generation()
     
-    # Exit with appropriate code
-    if dest_result and gen_result == 0:
+    # Exit with appropriate code - both should succeed
+    if dest_result is True and gen_result == 0:
         sys.exit(0)
     else:
         sys.exit(1)

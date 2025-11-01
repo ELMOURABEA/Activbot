@@ -77,7 +77,7 @@ class UAECoinQRGenerator:
             Path to the generated PNG file
         """
         qr = qrcode.QRCode(
-            version=1,  # Auto-adjust version based on data
+            version=1,  # Starting version, will auto-adjust when fit=True
             error_correction=qrcode.constants.ERROR_CORRECT_H,  # High error correction
             box_size=box_size,
             border=border,
