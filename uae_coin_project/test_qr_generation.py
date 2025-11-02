@@ -9,7 +9,6 @@ This script validates that:
 4. QR codes are readable (can be decoded)
 """
 
-import os
 import sys
 from pathlib import Path
 import qrcode
