@@ -130,36 +130,6 @@ activbot:
 - Automated testing on every push
 - Plugin and workflow compatibility checking
 
-## UAE Commemorative Coin Project
-
-This repository includes a QR code generation system for the UAE Commemorative Coin Project. The system generates QR codes linking to emirate-specific pages, cultural content, and project resources.
-
-### Quick Access QR Codes
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="uae_coin_project/qr_codes/emirate1_abudhabi_qr.png" width="120"><br>
-      <b>Abu Dhabi</b>
-    </td>
-    <td align="center">
-      <img src="uae_coin_project/qr_codes/emirate2_dubai_qr.png" width="120"><br>
-      <b>Dubai</b>
-    </td>
-    <td align="center">
-      <img src="uae_coin_project/qr_codes/falcon_eye_culture_qr.png" width="120"><br>
-      <b>Culture</b>
-    </td>
-  </tr>
-</table>
-
-### Resources
-
-- 📱 [QR Code Generator](uae_coin_project/generate_qr_codes.py)
-- 📖 [UAE Coin Project Documentation](uae_coin_project/README.md)
-- 🔄 [QR Update Instructions](uae_coin_project/docs/UPDATE_QR_DESTINATIONS.md)
-- 📋 [Integration Examples](uae_coin_project/docs/INTEGRATION_EXAMPLES.md)
-
 ## Contributing
 
 Contributions are welcome! Please:
