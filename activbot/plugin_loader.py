@@ -50,11 +50,20 @@ class PluginLoader:
         spec.loader.exec_module(module)
         
         # Find the plugin class (looks for classes with 'Plugin' in name or 'execute' method)
+        # Prioritize classes with 'Plugin' in name for faster discovery
         plugin_class = None
+        classes_with_execute = []
+        
         for name, obj in inspect.getmembers(module, inspect.isclass):
-            if 'Plugin' in name or hasattr(obj, 'execute'):
+            if 'Plugin' in name:
                 plugin_class = obj
                 break
+            elif hasattr(obj, 'execute'):
+                classes_with_execute.append(obj)
+        
+        # Fallback to first class with execute method
+        if plugin_class is None and classes_with_execute:
+            plugin_class = classes_with_execute[0]
                 
         if plugin_class is None:
             raise ValueError(f"No valid plugin class found in {plugin_path}")
