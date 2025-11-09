@@ -1,0 +1,42 @@
+name: Build and Test (English & Arabic) I 
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint (English/Arabic)
+      run: |
+        echo "Linting code for English and Arabic support..."
+        # Add your i18n/l10n linting tools here if any
+        # Example: python scripts/lint_translations.py
+
+    - name: Run tests (English)
+      run: |
+        echo "Running English tests..."
+        # Example: pytest -m "english"
+
+    - name: Run tests (Arabic)
+      run: |
+        echo "Running Arabic tests..."
+        # Example: pytest -m "arabic"
+                    #ELMOURABEA
+          

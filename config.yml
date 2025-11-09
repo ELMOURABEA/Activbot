@@ -1,0 +1,53 @@
+# Activbot Configuration
+# Auto-Design Workflow System Configuration
+
+# Core Settings
+activbot:
+  version: "0.1.0"
+  
+  # Workflow Engine Configuration
+  engine:
+    workflow_dir: "activbot/workflows"
+    plugin_dir: "activbot/plugins"
+    schema_dir: "activbot/schemas"
+    max_concurrent_tasks: 10
+    task_timeout: 300  # seconds
+    
+  # Auto-Update Settings
+  auto_update:
+    enabled: true
+    check_interval: 3600  # seconds (1 hour)
+    auto_apply_safe_updates: false  # Set to true to auto-apply safe updates
+    backup_before_update: true
+    
+  # Plugin Management
+  plugins:
+    auto_load: true
+    hot_reload: true  # Enable hot-reloading of plugins
+    allow_external: false  # Allow loading plugins from external sources
+    
+  # Workflow Generation
+  workflow_generation:
+    auto_version: true
+    track_history: true
+    validate_on_create: true
+    validate_on_update: true
+    
+  # Logging
+  logging:
+    level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file: "activbot.log"
+    
+  # CI/CD Integration
+  ci_cd:
+    enabled: true
+    validate_on_push: true
+    test_workflows_on_pr: true
+    auto_update_workflows: false  # Requires manual approval
+    
+  # Monitoring
+  monitoring:
+    enabled: false
+    metrics_endpoint: null
+    health_check_interval: 60  # seconds

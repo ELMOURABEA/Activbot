@@ -1,0 +1,24 @@
+# Downloaded tools and binaries
+actionlint
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+copilot/fix-625a8842-f69f-44f5-ab5e-0419c895b>>>
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+# OS.DS_Store
+Thumbs.db
