@@ -3,7 +3,7 @@ Workflow Manager - Manages dynamic workflow generation and updates
 """
 import yaml
 import json
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -133,7 +133,7 @@ class WorkflowManager:
         
         return self.create_workflow(name, tasks, metadata)
         
-    def validate_workflow(self, workflow: Dict) -> tuple[bool, List[str]]:
+    def validate_workflow(self, workflow: Dict) -> Tuple[bool, List[str]]:
         """
         Validate a workflow definition against schema and constraints.
         
