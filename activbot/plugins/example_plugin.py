@@ -1,7 +1,7 @@
 """
 Example Plugin - Demonstrates plugin implementation
 """
-from typing import Dict
+from typing import Dict, Tuple
 try:
     from .base_plugin import BasePlugin
 except ImportError:
@@ -45,7 +45,7 @@ class ExamplePlugin(BasePlugin):
         
         return result
         
-    def validate_parameters(self, task: Dict) -> tuple[bool, str]:
+    def validate_parameters(self, task: Dict) -> Tuple[bool, str]:
         """Validate task has required fields."""
         if 'name' not in task:
             return False, "Task must have a 'name' field"

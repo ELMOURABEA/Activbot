@@ -2,7 +2,7 @@
 Base Plugin - Interface for all Activbot plugins
 """
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
 
 class BasePlugin(ABC):
@@ -29,7 +29,7 @@ class BasePlugin(ABC):
         """
         pass
         
-    def validate_parameters(self, task: Dict) -> tuple[bool, str]:
+    def validate_parameters(self, task: Dict) -> Tuple[bool, str]:
         """
         Validate task parameters before execution.
         
