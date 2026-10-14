@@ -62,10 +62,7 @@ jobs:
           workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider' # TODO: replace with your workload identity provider
 
       - id: 'deploy'
-        name: 'Deploy to Cloud Run'
-        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
-        with:
-          service: '${{ env.SERVICE }}'
+        name: 'Deploy to Cloud Run'        with: npm           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: './'
