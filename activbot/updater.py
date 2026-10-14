@@ -18,6 +18,11 @@ class WorkflowUpdater:
                  plugin_dir: str = "activbot/plugins"):
         self.workflow_dir = Path(workflow_dir)
         self.plugin_dir = Path(plugin_dir)
+        
+    def check_plugin_updates(self) -> Dict[str, Any]:
+        """
+        Check for available plugin updates.
+        
         self._plugin_files_cache = None
         self._workflow_files_cache = None
         self._cache_timestamp = None
@@ -69,6 +74,13 @@ class WorkflowUpdater:
         """
         updates = {}
         
+        if not self.plugin_dir.exists():
+            return updates
+            
+        for plugin_file in self.plugin_dir.glob("*.py"):
+            if plugin_file.name.startswith("__"):
+                continue
+                
         for plugin_file in self._get_plugin_files(use_cache):
             plugin_name = plugin_file.stem
             
@@ -82,6 +94,10 @@ class WorkflowUpdater:
             }
             
         return updates
+        
+    def analyze_workflows(self) -> Dict[str, List[str]]:
+        """
+        Analyze workflows for potential improvements.
         
     def analyze_workflows(self, use_cache: bool = True) -> Dict[str, List[str]]:
         """

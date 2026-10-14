@@ -50,6 +50,11 @@ class PluginLoader:
         spec.loader.exec_module(module)
         
         # Find the plugin class (looks for classes with 'Plugin' in name or 'execute' method)
+        plugin_class = None
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            if 'Plugin' in name or hasattr(obj, 'execute'):
+                plugin_class = obj
+                break
         # Prioritize classes with 'Plugin' in name for faster discovery
         plugin_class = None
         classes_with_execute = []

@@ -96,6 +96,10 @@ class WorkflowValidator:
             
         return len(errors) == 0, errors
         
+    def validate_all_workflows(self) -> dict:
+        """
+        Validate all workflows in the workflow directory.
+        
     def _get_workflow_files(self, use_cache: bool = True):
         """
         Get list of workflow files with optional caching.

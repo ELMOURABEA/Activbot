@@ -162,20 +162,20 @@ class WorkflowEngine:
                 adjacency[dep].append(task['name'])
         
         # Kahn's algorithm for topological sort
-        # Sort initial queue once for consistent ordering
-        # Using reverse=True with pop() gives us alphabetical order (pop from end)
-        queue = sorted([name for name in in_degree if in_degree[name] == 0], reverse=True)
+      queue = [name for name in in_degree if in_degree[name] == 0]
         sorted_names = []
         
         while queue:
-            current = queue.pop()  # Pop from end (smallest name due to reverse sort)
+            # Sort queue to ensure consistent ordering when multiple tasks have no dependencies
+            queue.sort(reverse=True)
+            current = queue.pop()
             sorted_names.append(current)
             
             # Reduce in-degree for dependent tasks
             for dependent in adjacency[current]:
                 in_degree[dependent] -= 1
                 if in_degree[dependent] == 0:
-                    # Insert in sorted order for consistent execution
+# Insert in sorted order for consistent execution
                     bisect.insort(queue, dependent)
         
         # Check for circular dependencies

@@ -2,6 +2,7 @@ name: Workflow Auto-Update System
 
 on:
   push:
+    branches: [ "main" ]
     paths:
       - 'activbot/workflows/**'
       - 'activbot/plugins/**'
@@ -12,6 +13,11 @@ on:
     inputs:
       workflow_name:
         description: 'Workflow to validate'
+        required: false
+        type: string
+
+jobs:
+ - name: Install dependencies
         required: true 
         type: string
 

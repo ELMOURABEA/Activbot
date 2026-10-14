@@ -13,6 +13,8 @@ ENV/
 *.egg-info/
 dist/
 build/
+copilot/fix-625a8842-f69f-44f5-ab5e-0419c895b>>>
+
 .coverage
 .pytest_cache/
 *.log
@@ -27,6 +29,8 @@ activbot/workflows/workflow_*.yml
 *.swp
 *.swo
 *~
+# OS.DS_Store
+Thumbs.db
 
 # OS
 .DS_Store

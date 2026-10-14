@@ -188,6 +188,17 @@ class WorkflowManager:
         workflow_path = self.workflow_dir / f"{workflow['name']}.yml"
         with open(workflow_path, 'w') as f:
             yaml.dump(workflow, f, default_flow_style=False, sort_keys=False)
+            
+    def list_workflows(self) -> List[str]:
+        """
+        List all available workflow files.
+        
+        Returns:
+            List of workflow names
+        """
+        workflows = []
+        for workflow_file in self.workflow_dir.glob("*.yml"):
+            workflows.append(workflow_file.stem)
         # Invalidate cache when workflow is saved
         self._workflow_cache = None
         self._cache_timestamp = None
