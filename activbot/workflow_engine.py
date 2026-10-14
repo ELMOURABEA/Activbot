@@ -3,6 +3,7 @@ Workflow Engine - Core execution engine for dynamic workflows
 """
 import yaml
 import json
+import bisect
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
@@ -161,7 +162,7 @@ class WorkflowEngine:
                 adjacency[dep].append(task['name'])
         
         # Kahn's algorithm for topological sort
-        queue = [name for name in in_degree if in_degree[name] == 0]
+      queue = [name for name in in_degree if in_degree[name] == 0]
         sorted_names = []
         
         while queue:
@@ -174,7 +175,8 @@ class WorkflowEngine:
             for dependent in adjacency[current]:
                 in_degree[dependent] -= 1
                 if in_degree[dependent] == 0:
-                    queue.append(dependent)
+# Insert in sorted order for consistent execution
+                    bisect.insort(queue, dependent)
         
         # Check for circular dependencies
         if len(sorted_names) != len(tasks):

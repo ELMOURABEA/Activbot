@@ -15,10 +15,23 @@ dist/
 build/
 copilot/fix-625a8842-f69f-44f5-ab5e-0419c895b>>>
 
+.coverage
+.pytest_cache/
+*.log
+
+# Test-generated workflows
+activbot/workflows/perf_test_*.yml
+activbot/workflows/workflow_*.yml
+
+# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 # OS.DS_Store
+Thumbs.db
+
+# OS
+.DS_Store
 Thumbs.db
